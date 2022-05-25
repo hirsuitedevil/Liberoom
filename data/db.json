@@ -1,0 +1,22 @@
+{
+  "details": [
+    {
+      "username": "hirsuitedevil",
+      "password": "12345",
+      "cpassword": "12345",
+      "id": 1
+    },
+    {
+      "username": "scholar",
+      "password": "123",
+      "cpassword": "123",
+      "id": 2
+    },
+    {
+      "username": "dhruv",
+      "password": "1234",
+      "cpassword": "1234",
+      "id": 3
+    }
+  ]
+}

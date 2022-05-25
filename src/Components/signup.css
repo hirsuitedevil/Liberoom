@@ -1,0 +1,132 @@
+.container {
+    height: auto;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-top: 10%;
+}
+
+*/ *,
+*:before,
+*:after {
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+#main {
+    width: max-content;
+    margin: 40px auto;
+    font-family: "Segoe UI", sans-serif;
+    padding: 25px 28px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #302d2d;
+    animation: popup 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes popup {
+    0% {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: black;
+}
+
+h4 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: grey;
+    opacity: 60%;
+}
+
+p {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: grey;
+    opacity: 90%;
+}
+
+a {
+    text-decoration: none;
+}
+
+.fpass {
+    display: inline;
+    float: right;
+    color: grey;
+}
+
+.input-parent {
+    display: block;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #8a8787;
+    opacity: 90%;
+}
+
+.input-parent input {
+    padding: 10px 8px;
+    width: 100%;
+    font-size: 14px;
+    background: white;
+    border: none;
+    color: black;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.2s ease;
+    opacity: 80%;
+}
+
+.input-parent input:focus {
+    box-shadow: 0px 0px 0px 1px #0087ff;
+}
+
+button {
+    padding: 10px 18px;
+    font-size: 15px;
+    background: blue;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    color: #f4f4f4;
+    transition: all 0.2s ease;
+    margin-bottom: 10px;
+    opacity: 80%;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:focus {
+    box-shadow: 0px 0px 0px 3px black;
+}
+
+body {
+    background-color: #383444;
+    margin: 0;
+}
