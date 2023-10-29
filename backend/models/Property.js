@@ -25,16 +25,17 @@ const PropertySchema = new mongoose.Schema({
         type: [String],
         required: true,
     },
-    sqmeters: {
-        type: Number,
-        required: true,
-    },
-    bed:{
+    area: {
         type: Number,
         required: true,
         min: 1
     },
-    bathroom:{
+    bedrooms:{
+        type: Number,
+        required: true,
+        min: 1
+    },
+    bathrooms:{
         type: Number,
         required: true,
         min: 1
@@ -51,34 +52,29 @@ const PropertySchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    price:{
+    regularPrice:{
         type: Number,
         required: true,
     },
-    discprice: {
+    discountedPrice: {
         type: Number,
         required: function() {
             return this.offer === true;
         },
     },
-    location: {
+    address: {
         type: String,
         required: true,
     },
-    geolocation: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            required: true,
-        },
-        coordinates: {
-            type: [Number],
-            required: true,
-        },
-    }
+    latitude: {
+        type: Number,
+        required: true,
+    },
+    longitude: {
+        type: Number,
+        required: true,
+    },
 }, {timestamps:true})
 
-// Index the geolocation field for efficient querying
-PropertySchema.index({ geolocation: '2dsphere' });
 
 module.exports = mongoose.model("Property", PropertySchema)

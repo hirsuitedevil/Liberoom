@@ -11,6 +11,7 @@ const Signup = () => {
 
   const [showPassword,setshowPassword] = useState(false)
   const [state, setState] = useState({})
+  const [error, setError] = useState(null);
   const [photo,setPhoto] = useState("")
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -26,12 +27,16 @@ const Signup = () => {
       try {
         let filename = null
         if(photo){
+          if (photo.type !== 'image/jpeg') {
+            setError('Only .jpg profile pictures are allowed.'); // Set error message
+            return;
+          }
           const formData = new FormData()
-          filename = crypto.randomUUID() + photo.name
-          formData.append("filename", filename)
-          formData.append('image', photo)
-
-          await request('/upload/image',"POST", {}, formData, true)
+          filename = crypto.randomUUID() + photo.name;
+          formData.append("image", photo, filename);
+          console.log(formData)
+          const data = await request('/upload/image',"POST", {}, formData, true)
+          console.log(data)
         }else{
           return
         }
@@ -39,11 +44,11 @@ const Signup = () => {
         const headers ={
         'Content-Type': "application/json"
         }
-        const data = await request('/auth/register', "POST", headers, {...state, profileImg: filename})
-        console.log(data)
-        dispatch(register(data))
-        navigate('/')
+        const responseData = await request('/auth/register', "POST", headers, {...state, profileImg: filename})
+        dispatch(register(responseData));
+        navigate('/');
       } catch (error) {
+          setError(error.message);
           console.error(error)
       }   
     }
@@ -53,6 +58,7 @@ const Signup = () => {
       <div className="d-flex align-items-center justify-content-center w-100 mt-4">
         <form className='bg-light p-4' onSubmit={handleSubmit}>
         <h3 className='bg-dark p-2 mt-2 text-light text-center'>Sign Up</h3>
+        {error && <p className="text-danger">{error}</p>}
           <div className="mb-3">
             <label htmlFor="exampleInputEmail1" className="form-label">
               Email address
@@ -67,6 +73,7 @@ const Signup = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="photo" className="form-label">
+            
               Upload Photo
              <input type="file" className="form-control" id="photo" onChange={(e) => setPhoto(e.target.files[0])} />
             </label>

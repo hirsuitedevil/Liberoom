@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import Layout from '../Components/Layout/Layout';
 import { useSelector, useDispatch } from 'react-redux';
 import { MdDoneOutline } from 'react-icons/md';
-import { FaEdit } from 'react-icons/fa';
+import { FaArrowAltCircleRight, FaEdit } from 'react-icons/fa';
 import { request } from '../util/fetchAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { updateName } from '../redux/authSlice';
 
 const Profile = () => {
@@ -36,10 +36,10 @@ const Profile = () => {
           name,
           email,
         });
-        dispatch(updateName(response)); // Update the user's name in the Redux store
+        dispatch(updateName(response)); 
         setformData((prevState) => ({
         ...prevState,
-        name: response.name, // Update the local state with the updated name from the server
+        name: response.name,
       }));
         navigate('/profile');
       }
@@ -48,28 +48,10 @@ const Profile = () => {
       console.log('Error during profile update:', error);
     }
   };
-  
-  const [imageURL, setImageURL] = useState('');
-
-  // Fetch the profile image URL from the server
-  useEffect(() => {
-  const fetchProfileImage = async () => {
-    try {
-      console.log(user.email)
-      const response = await request('/auth/profileImage', 'GET', {}, {
-        params: { email: user.email } // Pass the email as a query parameter
-      });
-      setImageURL(response.url); // Update the image URL using response.url
-    } catch (error) {
-      console.error('Error fetching profile image:', error);
-    }
-  };
-  fetchProfileImage(); 
-}, [user.email]);
 
   return (
     <Layout>
-      <div className='container mt-4 w-50 d-flex justify-content-between'>
+      <div className='container mt-4 w-25 d-flex'>
         <h4>Profile Details</h4>
       </div>
       <div className='container mt-4 card' style={{ width: '18rem' }}>
@@ -92,8 +74,15 @@ const Profile = () => {
           <form>
             <div className='mb-3'>
         <label htmlFor='photo' className='form-label'>
-          {/* Conditionally render the profile image if the imageURL exists */}
-          <img alt='Profile' />
+          {
+            user.profileImg.includes('https://lh3.googleusercontent.com') ? (
+            <img src={user.profileImg} alt='Google Profile' />
+            ) : (
+            <img src={`http://localhost:5000/images/${user.profileImg}`} alt='Local Profile' width="100px" height="100px"/>
+            
+            )
+            
+          }
         </label>
       </div>
             <div className='mb-3'>
@@ -123,6 +112,7 @@ const Profile = () => {
               />
             </div>
           </form>
+          <Link to="/create-listing"> <FaArrowAltCircleRight/>&nbsp;Add your properties</Link>
         </div>
       </div>
     </Layout>

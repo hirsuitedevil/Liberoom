@@ -3,10 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     user: null,
     token: null,
-<<<<<<< HEAD
-=======
-    profileImg: null
->>>>>>> parent of edb67ca4 (added google sign in)
+    isAuthenticated: false,
 }
 
 export const authSlice = createSlice({
@@ -17,24 +14,25 @@ export const authSlice = createSlice({
             localStorage.clear()
             state.user = action.payload.others
             state.token = action.payload.token
-            state.profileImg = action.payload.profileImg
+            state.isAuthenticated = true
         },
         register(state, action) {
             localStorage.clear()
             state.user = action.payload.others
             state.token = action.payload.token
-            state.profileImg = action.payload.profileImg
+            state.isAuthenticated = true
         },
         logout(state) {
             state.user = null
             state.token = null
+            state.isAuthenticated = false
             localStorage.clear()
         },
         loginWithGoogle(state, action) {
             localStorage.clear();
-            state.user = action.payload.others
+            state.user = action.payload.user
             state.token = action.payload.token
-            state.profileImg = action.payload.profileImg
+            state.isAuthenticated = true
         },
         updateName(state, action) {
         state.user.name = action.payload.others.name

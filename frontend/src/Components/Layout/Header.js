@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import { logout } from '../../redux/authSlice'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')  
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
-const verifyToken = require('../middlewares/verifyToken');
+const path = require('path')
 
 // google signin
 authController.post('/googlesign', async (req, res) => {
@@ -40,7 +40,8 @@ authController.post('/register', async(req,res) => {
 
         return res.status(201).json({others,token})
     } catch (error) {
-        return res.status(500).json(error.message)
+        console.log(error)
+        return res.status(500).json({ error: error.message });
     }
 })
 
@@ -149,6 +150,24 @@ authController.post('/reset-password/:id/:token', async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json(error.message);
+  }
+});
+
+authController.get('/profileImages/:email', async (req, res) => {
+  try {
+    const userEmail = req.params.email;
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      throw new Error('Email not found');
+    }
+
+    const imageName = user.profileImg; // Assuming user.profileImg holds the image name
+    const imagePath = path.join(__dirname, '..', 'public', 'images', imageName);
+    res.sendFile(imagePath);
+  } catch (error) {
+    console.error('Error retrieving profile image:', error);
+    res.status(404).json({ error: 'Profile image not found' });
   }
 });
 

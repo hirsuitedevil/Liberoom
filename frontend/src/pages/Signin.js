@@ -11,37 +11,11 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-=======
-  function handleCallbackResponse(response){
-    console.log("Encoded JWT ID token:"+response.credential)
-    var userObject = jwt_decode(response.credential)
-    console.log(userObject)
-    const { user, token } = userObject; 
-    dispatch(loginWithGoogle({ user, token }))
-    navigate('/');
-  }
-  useEffect(() => {
-    /* global google*/
-    google.accounts.id.initialize({
-      client_id:"745056816479-2sqbja48boa5umsgbrmvnml30gjecfo0.apps.googleusercontent.com",
-      callback:handleCallbackResponse
-    })
-    google.accounts.id.renderButton(
-      document.getElementById("signinDiv"),
-      {
-        theme:"outline",
-        size:"large"
-      }
-    )
-  },[])
->>>>>>> parent of edb67ca4 (added google sign in)
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {

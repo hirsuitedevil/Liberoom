@@ -6,68 +6,54 @@ const verifyToken = require('../middlewares/verifyToken')
 propertyController.get('/getAll', async(req,res) =>{
     try {
         const properties = await Property.find({})
-
         return res.status(200).json(properties)
     } catch (error) {
         return res.status(500).json(error.message)
     }
 })
 
-// get featured 
-propertyController.get('/find/featured', async(req,res) =>{
+// get offer 
+propertyController.get('/find/offer', async(req,res) =>{
     try {
-        const featuredProperties = await Property.find({featured:true}).populate('currentOwner','-password')
-        return res.status(200).json(featuredProperties)
+        const offerProperties = await Property.find({offer:true}).populate('currentOwner','-password')
+        return res.status(200).json(offerProperties)
     } catch (error) {
         return res.status(500).json(error.message)
     }
 })
 
 // get all from specific type
-propertyController.get('/find', async(req,res) =>{
-    const type = req.query
+propertyController.get('/find/:typeName', async (req, res) => {
+    const type = req.params.typeName;
     try {
-        if(type){
-            const properties = await Property.find(type).populate('currentOwner','-password')
-            return res.status(200).json(properties)
-        }
-        else{
-            return res.status(500).json({msg:"No such type"})
+        if (type) {
+            const properties = await Property.find({ type: type }).populate('currentOwner', '-password');
+            return res.status(200).json(properties);
+        } else {
+            return res.status(400).json({ msg: "Type parameter is required" });
         }
     } catch (error) {
-        return res.status(500).json(error.message)
+        return res.status(500).json({ msg: error.message });
     }
-})
-
-// get counts of types
-propertyController.get('/find/types', async(req,res) =>{
-    const type = req.query
-    try {
-        const rentType = await Property.countDocuments({type: 'Rent'})
-        const saleType = await Property.countDocuments({type: 'Sale'})
-        
-        return res.status(200).json({
-            Rent: rentType,
-            Sale: saleType,
-        })
-    } catch (error) {
-        return res.status(500).json(error.message)
-    }
-})
+});
 
 // get individual property
-propertyController.get('/find/:id', async(req,res) => {
-    try {
-        const property = await Property.findById(req.params.id).populate("currentOwner", "-password")
-        if(!property){
-            throw new Error("No such property")
-        }else{
-            return res.status(200).json(property)
-        }
-    } catch (error) {
-        return res.status(500).json(error.message)
+propertyController.get('/find', async (req, res) => {
+  const id = req.query.id;
+
+  try {
+    const property = await Property.findById(id).populate('currentOwner', '-password');
+
+    if (!property) {
+      throw new Error('No such property with that id');
+    } else {
+      return res.status(200).json(property);
     }
-})
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 
 // create a property
 propertyController.post('/',verifyToken,async(req,res) =>{
@@ -75,9 +61,10 @@ propertyController.post('/',verifyToken,async(req,res) =>{
         const newProperty = await Property.create({...req.body, currentOwner: req.user.id})
         return res.status(201).json(newProperty)
     } catch (error) {
+        console.log(error.message)
         return res.status(500).json(error.message)
     }
-})
+});
 
 // update property
 propertyController.put('/:id',verifyToken,async(req,res) =>{
@@ -98,7 +85,7 @@ propertyController.put('/:id',verifyToken,async(req,res) =>{
     } catch (error) {
         return res.status(500).json(error.message)
     }
-})
+});
 
 // delete property
 propertyController.delete('/:id',verifyToken,async(req,res) =>{
@@ -115,6 +102,6 @@ propertyController.delete('/:id',verifyToken,async(req,res) =>{
     } catch (error) {
         return res.status(500).json(error.message)
     }
-})
+});
 
 module.exports = propertyController

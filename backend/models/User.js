@@ -3,17 +3,22 @@ const mongoose = require('mongoose')
 const UserSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     email:{
         type: String,
         required: true,
         unique: true
     },
+    isGoogleSignedIn: { 
+        type: Boolean, 
+        default: false 
+    },
     password:{
         type: String,
-        required: true,
+        required: function() {
+            return !this.isGoogleSignedIn;
+        },
         min: 6
     },
     profileImg:{
