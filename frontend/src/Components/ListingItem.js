@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import {FaBath, FaBed} from 'react-icons/fa'
-const ListingItem = ({listing,id}) => {
+import MapComponent from '../pages/MapComponent'
+const ListingItem = ({listing,id, onDelete, onEdit}) => {
   return (
     <>
     <div className='d-flex align-items-center justify-content-center'>
-        <div className="card category-text" style={{width:"800px"}}>
+        <div className="card category-text mb-2" style={{width:"800px"}}>
             <Link to={`/category/${listing.type}/${id}`}>
                 <div className="row container">
                     <div className="col-md-5">
@@ -21,9 +22,20 @@ const ListingItem = ({listing,id}) => {
                         {listing.bedrooms > 1 ? `${listing.bedrooms} Bedrooms`: "1 Bedroom" }</p>
                         <p><FaBath/> &nbsp;
                         {listing.bathrooms > 1 ? `${listing.bathrooms} Bathrooms`: "1 Bathroom" }</p>
+                        
                     </div>
                 </div>
             </Link>
+            { onDelete && (
+                <button className='btn btn-danger' onClick={()=> {onDelete(listing._id)}}>
+                Delete Listing
+                </button>
+            )}
+            { onEdit && (
+                <button className='btn btn-info' onClick={()=> {onEdit(listing._id)}}>
+                Edit Listing
+                </button>
+            )}
         </div>
         </div>
     </>

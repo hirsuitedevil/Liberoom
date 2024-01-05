@@ -44,7 +44,11 @@ export const request = async (url, method, headers = {}, body = {}, isNotStringi
             return data
 
         case 'DELETE':
-            res = await fetch(BASE_URL + url, { headers, method })
+            if (isNotStringified) {
+                res = await fetch(BASE_URL + url, { headers, method, body });
+            } else {
+                res = await fetch(BASE_URL + url, { headers, method, body: JSON.stringify({ ...body }) });
+            }
             if(res.status !== 200 && res.status !== 201) throw new Error("ERROR")
             data = await res.json()
             return data

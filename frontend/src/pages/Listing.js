@@ -7,12 +7,12 @@ import {FaBath, FaBed} from 'react-icons/fa'
 import {GiWoodenChair} from 'react-icons/gi'
 import {AiFillCar} from 'react-icons/ai'
 import {BiSolidUserRectangle} from 'react-icons/bi'
-import SwipeCore,{EffectCoverflow, Navigation, Pagination} from 'swiper'
+import SwipeCore,{EffectCoverflow, Pagination} from 'swiper'
 import {Swiper, SwiperSlide} from 'swiper/react'
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import { useSelector } from 'react-redux'
-
+import MapComponent from './MapComponent'
 //config
 SwipeCore.use([EffectCoverflow, Pagination]);
 
@@ -32,8 +32,6 @@ const Listing = () => {
       const fetchDetails = async () => {
       try {
         const data = await request(`/property/find?id=${listingId}`, "GET")
-        console.log(data)
-        console.log(data.img)
         setListing(data)
       } catch (error) {
         console.error(error)
@@ -83,7 +81,7 @@ const Listing = () => {
             <div>
               <h3>{listing.title}</h3>
               <p>
-              Price: Rs
+              <b>Price:</b> Rs
               {listing.offer ? (
                 <span>
                   <span style={{ textDecoration: 'line-through', marginLeft:'5px'}}>
@@ -99,10 +97,13 @@ const Listing = () => {
               {listing.type==="Rent" && "/ Month"}
             </p>
             <p>
-              Property For: {listing.type}
+              <b>Property For:</b> {listing.type}
             </p>
             <p>
-              Description: {listing.desc}
+              <b>Address:</b> {listing.address}
+            </p>
+            <p>
+              <b>Description:</b> {listing.desc}
             </p>
             <p><FaBed/> &nbsp;
             {listing.bedrooms > 1 ? `${listing.bedrooms} Bedrooms`: "1 Bedroom" }</p>
@@ -118,6 +119,10 @@ const Listing = () => {
               to={`/contact/${listingId}`}>
               Contact Landlord
             </Link>
+
+            <div className='mt-2'>
+            <MapComponent latitude={listing.latitude} longitude={listing.longitude} />
+            </div>
             </div>
           ) : (
             <Spinner/>

@@ -108,12 +108,17 @@ const Profile = () => {
                 id='email'
                 value={email}
                 onChange={onchange}
-                disabled={!changeDetails}
+                disabled
               />
             </div>
           </form>
           <Link to="/create-listing"> <FaArrowAltCircleRight/>&nbsp;Add your properties</Link>
+          <br/>
+          <Link to="/view-listing"> <FaArrowAltCircleRight/>&nbsp;View your properties</Link>
         </div>
+      </div>
+      <div>
+
       </div>
     </Layout>
   );

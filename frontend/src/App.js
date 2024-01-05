@@ -15,6 +15,9 @@ import CreateListing from './pages/CreateListing';
 import PrivateRoute from './Components/PrivateRoute';
 import Listing from './pages/Listing';
 import Contact from './pages/Contact';
+import ViewListing from './pages/ViewListing';
+import EditListing from './pages/EditListing';
+
 
 function App() {
   return (
@@ -33,6 +36,8 @@ function App() {
             <Route path='/forgotpassword' element={<ForgotPassword/>}/>
             <Route path='/resetpassword/:id/:token' element={<ResetPassword/>}/>
             <Route path="/create-listing" element={<CreateListing/>}/>
+            <Route path="/view-listing" element={<ViewListing/>}/>
+            <Route path="/edit-listing/:listingId" element={<EditListing/>}/>
             <Route path="/category/:categoryName/:listingId" element={<Listing/>}/>
             <Route path="/contact/:listingId" element={<Contact/>}/>
           </Routes>

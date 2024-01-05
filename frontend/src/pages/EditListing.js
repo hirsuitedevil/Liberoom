@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../Components/Layout/Layout';
-import { useNavigate } from 'react-router-dom';
 import Spinner from '../Components/Spinner';
 import { useSelector } from 'react-redux';
 import { request } from '../util/fetchAPI';
 
-const CreateListing = () => {
+const API_URL = 'http://localhost:5000';
+
+const EditListing = () => {
   const { user, token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
+  const [listing, setListing] = useState(null);
+  const params = useParams();
   const navigate = useNavigate();
   const [geoLocationEnable, setGeoLocationEnable] = useState(true);
+  const [initialImages, setInitialImages] = useState([]);
   const [displayedImages, setDisplayedImages] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -49,22 +54,42 @@ const CreateListing = () => {
   } = formData;
 
   useEffect(() => {
-    if (user) {
+    if (!user?._id) {
+      navigate('/signin');
+    } else {
       setFormData({
         ...formData,
         useRef: user._id,
       });
-    } else {
-      navigate('/signin');
     }
   }, [user, navigate]);
 
-  if (loading) {
-    return <Spinner />;
-  }
+  useEffect(() => {
+    setLoading(true);
+
+    const fetchListing = async () => {
+      try {
+        const data = await request(`/property/find?id=${params.listingId}`, 'GET');
+        if (data) {
+          setListing(data);
+          setFormData({ ...data });
+          setInitialImages(data.img.map((img) => ({ url: `${API_URL}/images/${img}` })));
+          setDisplayedImages(data.img.map((img) => ({ url: `${API_URL}/images/${img}` })));
+          setLoading(false);
+        } else {
+          navigate('/');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchListing();
+  }, [params.listingId, navigate]);
 
   const onChangeHandler = (e) => {
     let boolean = null;
+
     if (e.target.value === 'true') {
       boolean = true;
     }
@@ -72,21 +97,17 @@ const CreateListing = () => {
       boolean = false;
     }
 
-    // files
     if (e.target.files) {
-      setDisplayedImages([]);
-      const newSelectedImages = Array.from(e.target.files).map((file) => ({
+      const newImages = Array.from(e.target.files).map((file) => ({
         file,
         url: URL.createObjectURL(file),
       }));
-      setDisplayedImages(newSelectedImages);
-
+      setDisplayedImages([...newImages]);
       setFormData((prevState) => ({
         ...prevState,
         images: e.target.files,
       }));
     }
-    // text/booleans/number
     if (!e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
@@ -95,46 +116,61 @@ const CreateListing = () => {
     }
   };
 
+  const onChooseFilesClick = () => {
+    setDisplayedImages([]);
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    if (images > 6) {
-      return;
-    }
+
     let geoLocation = {};
     const response = await fetch(
       `https://geocode.search.hereapi.com/v1/geocode?q=${address}&apiKey=${APIKEY}`
     );
+    
     const dat = await response.json();
+    
     geoLocation.lat = dat.items[0].position.lat;
     geoLocation.lng = dat.items[0].position.lng;
 
     let filenames = [];
     const formData1 = new FormData();
-
+    let deleteImages = []
     if (images && images.length > 0) {
       for (let i = 0; i < images.length; i++) {
         const filename = crypto.randomUUID() + images[i].name;
         formData1.append('images', images[i], filename);
         filenames.push(filename);
+        deleteImages = initialImages.map((image) => {
+          return image.url.split('/').pop();
+        })
       }
-    } else {
-      return;
+    }else{
+      filenames = initialImages.map((image) => {
+          return image.url.split('/').pop();
+        })
     }
-
-    const data = await request(`/upload/image/property`, 'POST', {}, formData1, true);
-
+    await request(`/upload/image/property`, 'POST', {}, formData1, true);
     try {
       const options = {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       };
-      const data = await request(`/property`, 'POST', options, {
-        ...formData,
-        img: filenames,
-        latitude: geoLocation.lat,
-        longitude: geoLocation.lng,
-      });
+
+      const data = await request(
+        `/property/${params.listingId}`,
+        'PUT',
+        options,
+        { ...formData, img: filenames, latitude: geoLocation.lat, longitude: geoLocation.lng },
+        true
+      );
       if (data) {
+        const headers = {
+          'Authorization': `Bearer ${token}`, 
+          'Content-Type': 'application/json', 
+        };
+        const res = await request(`/upload/deleteImages`, "DELETE",headers,{ filenames: deleteImages });
+        console.log(res)
         navigate(`/category/${formData.type}/${data._id}`);
       }
     } catch (error) {
@@ -142,12 +178,15 @@ const CreateListing = () => {
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <Layout>
       <div className="container d-flex flex-column align-items-center justify-content-center mb-4">
-        <h3 className="mt-3 w-50 bg-dark text-light p-2 text-center">Create Listing</h3>
+        <h3 className="mt-3 w-50 bg-dark text-light p-2 text-center">Edit Listing</h3>
         <form className="w-50 bg-light p-4" onSubmit={onSubmitHandler}>
-
           <div className="d-flex flex-row mt-4">
             <div className="form-check">
               <input
@@ -155,7 +194,7 @@ const CreateListing = () => {
                 type="radio"
                 value="Rent"
                 onChange={onChangeHandler}
-                defaultChecked
+                checked = {type === 'Rent'}
                 name="type"
                 id="type"
               />
@@ -170,6 +209,7 @@ const CreateListing = () => {
                 name="type"
                 value="Sale"
                 onChange={onChangeHandler}
+                checked = {type === 'Sale'}
                 id="type"
               />
               <label className="form-check-label" htmlFor="sale">
@@ -437,6 +477,23 @@ const CreateListing = () => {
             </div>
           )}
 
+          {/* files images etc */}
+          <div className="mb-3">
+            <label htmlFor="formFile" className="form-label">
+              Select images:
+            </label>
+            <input
+              className="form-control"
+              type="file"
+              id="images"
+              name="images"
+              onChange={onChangeHandler}
+              onClick={onChooseFilesClick}
+              max="6"
+              accept=".jpg,.png,.jpeg"
+              multiple
+            />
+          </div>
           {/* Display selected images */}
           <div className="mb-3">
             <h3>Selected Images</h3>
@@ -444,18 +501,21 @@ const CreateListing = () => {
               {displayedImages.map((image, index) => (
                 <img
                   key={index}
-                  src={image.url}
+                  src= {image.url}
                   alt={`Selected Image ${index}`}
                   style={{ margin: '5px', maxWidth: '100px', maxHeight: '100px' }}
                 />
               ))}
             </div>
           </div>
+          {/* submit button */}
           <div className="mb-3">
-            <input className="form-control" type="file" id="images" name="images" onChange={onChangeHandler} max="6" accept=".jpg,.png,.jpeg" multiple required />
-          </div>
-          <div className="mb-3">
-            <input className="btn btn-primary w-100" type="submit" value="Create Listing" />
+            <input
+              // disabled={!title || !address || !regularPrice || !images}
+              className="btn btn-primary w-100"
+              type="submit"
+              value="Edit Listing"
+            />
           </div>
         </form>
       </div>
@@ -463,4 +523,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default EditListing;

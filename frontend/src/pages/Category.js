@@ -7,6 +7,7 @@ import ListingItem from '../Components/ListingItem'
 
 const Category = () => {
     const [listing,setListing] = useState(null)
+    const [lastFetchedListing, setLastFetchedListing] = useState(null)
     const [loading,setLoading] = useState(true)
     const params = useParams()
 

@@ -12,6 +12,18 @@ propertyController.get('/getAll', async(req,res) =>{
     }
 })
 
+// property search by Ownerid
+propertyController.get('/getByOwner', async(req,res) =>{
+    try{
+        const ownerId = req.query.ownerId;
+        const type = req.query.type
+        const properties = await Property.find({currentOwner:ownerId, type:type})
+        return res.status(200).json(properties)
+    }catch(error){
+        return res.status(500).json(error.message) 
+    }
+})
+
 // get offer 
 propertyController.get('/find/offer', async(req,res) =>{
     try {
@@ -40,10 +52,8 @@ propertyController.get('/find/:typeName', async (req, res) => {
 // get individual property
 propertyController.get('/find', async (req, res) => {
   const id = req.query.id;
-
   try {
     const property = await Property.findById(id).populate('currentOwner', '-password');
-
     if (!property) {
       throw new Error('No such property with that id');
     } else {
@@ -88,20 +98,21 @@ propertyController.put('/:id',verifyToken,async(req,res) =>{
 });
 
 // delete property
-propertyController.delete('/:id',verifyToken,async(req,res) =>{
+propertyController.delete('/delete/:id', verifyToken, async (req, res) => {
     try {
-        const property = await Property.findById(req.params.id)
-
-        if(property.currentOwner.toString() !== req.user.id.toString()){
-            throw new Error("Not authorized to delete others properties")
-        }else{
-            await property.delete()
-            return res.status(200).json({msg:"Property deleted successfully"})
+        const property = await Property.findById(req.params.id);
+        if (!property) {
+            return res.status(404).json({ msg: "Property not found" });
         }
-        return res.status(200).json(updatedProperty)
+        if (property.currentOwner.toString() !== req.user.id.toString()) {
+            throw new Error("Not authorized to delete others' properties");
+        }
+        await property.delete();
+        return res.status(200).json({ msg: "Property deleted successfully" });
     } catch (error) {
-        return res.status(500).json(error.message)
+        return res.status(500).json({ error: error.message });
     }
 });
+
 
 module.exports = propertyController

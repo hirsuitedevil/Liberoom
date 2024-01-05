@@ -9,16 +9,15 @@ const path = require('path')
 authController.post('/googlesign', async (req, res) => {
   try {
     const { email, name, picture } = req.body;
-
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       await User.findByIdAndUpdate(existingUser._id, { isGoogleSignedIn: true });
-      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '4h' });
+      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {expiresIn: '4h' });
       return res.status(200).json({ user: existingUser, token });
     } else {
       const newUser = await User.create({ email, name, profileImg: picture, isGoogleSignedIn: true });
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '4h' });
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {expiresIn: '4h' });
       return res.status(201).json({ user: newUser, token });
     }
   } catch (error) {
@@ -80,7 +79,7 @@ authController.put('/update', async (req, res) => {
     }
     const { password, ...others } = updatedUser._doc;
     const token = jwt.sign({ id: updatedUser._id }, process.env.JWT_SECRET, {
-      expiresIn: '4h',
+     expiresIn: '4h',
     });
     return res.status(200).json({ others, token });
   } catch (error) {
@@ -142,7 +141,7 @@ authController.post('/reset-password/:id/:token', async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10)
         user.password = hashedPassword;
         const updatedUser = await user.save();
-        const token = jwt.sign({ id: updatedUser._id }, process.env.JWT_SECRET, {expiresIn: '4h',});
+        const token = jwt.sign({ id: updatedUser._id }, process.env.JWT_SECRET, {expiresIn: '4h'});
 
     // Return the updated user data and token
     const { password, ...others } = updatedUser._doc;
@@ -153,18 +152,15 @@ authController.post('/reset-password/:id/:token', async (req, res) => {
   }
 });
 
-authController.get('/profileImages/:email', async (req, res) => {
+authController.get('/profileImages', async (req, res) => {
   try {
-    const userEmail = req.params.email;
-    const user = await User.findOne({ email: userEmail });
-
+    const userId = req.query.ownerId; // Use req.query to get the query parameter
+    const user = await User.findById(userId); // Use userId directly
     if (!user) {
-      throw new Error('Email not found');
+      throw new Error('User not found');
     }
-
-    const imageName = user.profileImg; // Assuming user.profileImg holds the image name
-    const imagePath = path.join(__dirname, '..', 'public', 'images', imageName);
-    res.sendFile(imagePath);
+    const profileImg = user.profileImg; // Assuming user.profileImg holds the image name
+    res.status(200).json({ profileImg })
   } catch (error) {
     console.error('Error retrieving profile image:', error);
     res.status(404).json({ error: 'Profile image not found' });
