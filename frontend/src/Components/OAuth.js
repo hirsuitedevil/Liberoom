@@ -33,17 +33,14 @@ const OAuth = () => {
     })
     google.accounts.id.renderButton(
     document.getElementById("signinDiv"),
-    { theme: "outline", size: "large",text: "sign_in_long", // Display long "Sign in with Google" text
-        width: "100%", }
+    { type:"standard" ,theme: "filled_blue", size: "large", shape:"circle" , text: "Continue with Google"}
     );
 },[])
   return (
-    <div>
-      <h6 className='mt-2'>
-        Sign {location.pathname === "/signup" ? "up": "in"} With 
+    <div className="justify-content-between align-items-center">
         <div id='signinDiv'></div>
-      </h6>
     </div>
+
   )
 }
 

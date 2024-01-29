@@ -56,7 +56,7 @@ uploadController.delete("/deleteImages", async (req, res) => {
         await fs.unlink(filePath);
         deleted = true;
       } catch (error) {
-        // Ignore the error and try the next extension
+        
       }
 
       if (deleted) {

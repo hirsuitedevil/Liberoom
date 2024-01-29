@@ -35,7 +35,9 @@ export const authSlice = createSlice({
             state.isAuthenticated = true
         },
         updateName(state, action) {
-        state.user.name = action.payload.others.name
+            state.user.name = action.payload.user.name
+            state.user.profileImg = action.payload.user.profileImg
+            state.token = action.payload.token
         }
     },
 })

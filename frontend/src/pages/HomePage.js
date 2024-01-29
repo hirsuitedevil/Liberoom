@@ -12,20 +12,21 @@ const HomePage = () => {
     <div className="container mt-3">
     <Slider/>
       <div className="row">
-        <h1> Category </h1>
+        <h1 className="text-red-700"> Category </h1>
         <div className="col-md-5">
-          <div className="Imagecontainer">
-            <img src={rentImg} alt="rent" />
-            <button className="btn" onClick={()=>{navigate('/category/Rent')}}>Rent</button>
-          </div>
+            <div className="position-relative">
+                <img className="img-fluid" src={rentImg} alt="rent" />
+                <button className="btn btn-primary position-absolute top-50 start-50 translate-middle" onClick={() => { navigate('/category/Rent') }}>Rent</button>
+            </div>
         </div>
         <div className="col-md-5">
-          <div className="Imagecontainer">
-            <img src={saleImg} alt="sale" />
-            <button className="btn" onClick={()=>{navigate('/category/Sale')}}>Sale</button>
-          </div>
+            <div className="position-relative">
+                <img className="img-fluid" src={saleImg} alt="sale" />
+                <button className="btn btn-primary position-absolute top-50 start-50 translate-middle" onClick={() => { navigate('/category/Sale') }}>Sale</button>
+            </div>
         </div>
-      </div>
+    </div>
+
     </div>
     </Layout>
   )

@@ -67,7 +67,7 @@ const Slider = () => {
           centeredSlides={true}
           slidesPerView={1}
           coverflowEffect={{
-            rotate: 50,
+            rotate: 25,
             stretch: 0,
             depth: 100,
             modifier: 1,
@@ -78,8 +78,8 @@ const Slider = () => {
         >
           {listing.map((listingItem, index) => (
             <SwiperSlide key={index} onClick={() => navigate(`/category/${listingItem.type}/${listingItem._id}`)}>
-              <h6 className='bg-info text-light p-2 m-0'>
-                <img src={listingItem.userImage} height={35} width={35} alt="user pic" />
+              <h6 className='bg-info text-light p-2 m-0 height={400} width={800}'>
+                <img src={listingItem.userImage} height={35} width={35} alt="user pic" className='rounded-circle'/>
                 <span className='ms-2'>{listingItem.title}</span>
               </h6>
               <img src={`http://localhost:5000/images/${listingItem.img[0]}`} height={400} width={800} alt={listingItem.title} />

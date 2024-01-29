@@ -33,57 +33,56 @@ const SignIn = () => {
 
   return (
     <Layout>
-      <div className="d-flex align-items-center justify-content-center w-100 mt-4">
-        <form className="bg-light p-4" onSubmit={handleLogin}>
-          <h3 className="bg-dark p-2 mt-2 text-light text-center">Sign In</h3>
+    <div className='grid grid-cols-1 sm:grid-cols-2 h-screen w-full'>
+      <div className='bg-slate-800 flex flex-col justify-center'>
+        <form className='max-w-[400px] w-full mx-auto rounded-lg bg-slate-900 p-8 px-8' onSubmit={handleLogin}>
+          <h3 className='text-4xl dark:text-white font-bold text-center'>Sign In</h3>
           {errorMessage && <p className="text-danger">{errorMessage}</p>}
-          <div className="mb-3">
+          <div className='flex flex-col text-slate-400 py-1 mt-4'>
             <label htmlFor="exampleInputEmail1" className="form-label">
               Email address
             </label>
             <input
               type="email"
               name="email"
-              className="form-control"
+              className='rounded-lg bg-slate-700 p-2 focus:border-blue-500 focus:bg-slate-800 focus:outline-none'
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="mb-3">
+          <div className='flex flex-col text-gray-400 py-1'>
           <label htmlfor="exampleInputPassword1" className="form-label">
               Password
             </label>
-            <div className="input-group">
+            <div className="bg-slate-700 rounded-lg flex items-center">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                className="form-control"
+                className='rounded-lg bg-slate-700 p-2 focus:border-blue-500 focus:bg-slate-800 focus:outline-none flex-grow'
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="input-group-append">
-                <span className="input-group-text">
-                  <AiFillEye
-                    onClick={() => {
-                      setShowPassword((prevState) => !prevState);
-                    }}
-                  />
-                </span>
-              </div>
+              <AiFillEye
+                onClick={() => {
+                  setShowPassword((prevState) => !prevState);
+                }}
+                className={`cursor-pointer text-${showPassword ?'slate-800' : 'slate-300'} mr-2`}
+              />
             </div>
-            <div className="mt-2 d-flex justify-content-between align-items-center">
-              <button type="submit" className="btn btn-primary">
-                Sign In
-              </button>
-              <span>
-                <Link to='/forgotpassword'>Forgot Password</Link>
-              </span>
             </div>
-          </div>
-          <div className="mt-2">
+            <button type="submit" className='w-full my-3 py-2 bg-teal-500 shadow-lg shadow-teal-500/50 hover:bg-teal-800 text-white font-semibold rounded-lg'>
+              Sign In
+            </button>
+            <div className='flex justify-between mt-2 text-slate-400'>
+                <p className='hover:underline'><Link to="/signup">Sign Up</Link></p>
+                <p className='hover:underline'><Link to="/forgotpassword">Forgot Password?</Link></p>
+            </div>
+            <hr className="my-4 border-t border-gray-300" />
             <OAuth/>
-            <span>New user?</span> <Link to="/signup">Sign Up</Link>
-          </div>
         </form>
       </div>
+      <div className='hidden sm:block'>
+        <img className='w-full h-full object-cover' src='https://cdn.pixabay.com/photo/2016/09/23/16/43/alley-1690053_1280.jpg' />
+      </div>
+    </div>
     </Layout>
   );
 };

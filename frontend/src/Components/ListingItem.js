@@ -1,17 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import {FaBath, FaBed} from 'react-icons/fa'
-import MapComponent from '../pages/MapComponent'
 const ListingItem = ({listing,id, onDelete, onEdit}) => {
   return (
     <>
-    <div className='d-flex align-items-center justify-content-center'>
-        <div className="card category-text mb-2" style={{width:"800px"}}>
+        <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]'>
             <Link to={`/category/${listing.type}/${id}`}>
                 <div className="row container">
-                    <div className="col-md-5">
-                        <img src = {`http://localhost:5000/images/${listing.img[0]}`} height={200} width={300} className='img-thumbnail' alt='img'/>
-                    </div>
+                    
+                    <img src = {`http://localhost:5000/images/${listing.img[0]}`} height={200} width={300} className='h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300' alt='img'/>
                     <div className="col-md-5">
                         <h4>{listing.title}</h4>
                         <p>{listing.address}</p>
@@ -36,7 +33,6 @@ const ListingItem = ({listing,id, onDelete, onEdit}) => {
                 Edit Listing
                 </button>
             )}
-        </div>
         </div>
     </>
   )

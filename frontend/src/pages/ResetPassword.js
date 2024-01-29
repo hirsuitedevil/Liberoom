@@ -26,7 +26,7 @@ const ResetPassword = () => {
         setMessage('Password reset successfully');
         setTimeout(() => {
         setMessage('');
-        navigate('/signin'); // Redirect after successful reset
+        navigate('/signin');
       }, 3000);
   } catch (error) {
     console.log(error);
@@ -35,43 +35,38 @@ const ResetPassword = () => {
 
   return (
     <Layout>
-      <div className="d-flex align-items-center justify-content-center w-100 mt-4">
-        <form className="bg-light p-4" onSubmit={onsubmitHandler}>
-          <h3 className="bg-dark p-2 mt-2 text-light text-center">Reset Password</h3>
+      <div className="flex flex-col bg-slate-700 items-center justify-center min-h-screen">
+        <form className="max-w-[400px] w-full mx-auto rounded-lg bg-slate-900 p-8 px-8" onSubmit={onsubmitHandler}>
+          <h3 className="text-2xl dark:text-white font-bold text-center">Reset Password</h3>
           {message && <p className="text-danger">{message}</p>}
-          <div className="mb-3">
+          <div className="flex flex-col text-slate-400 py-1 mt-4">
             <label htmlfor="exampleInputPassword1" className="form-label">
               New Password
             </label>
-            <div className="input-group">
+              <div className="bg-slate-700 rounded-lg flex items-center">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                className="form-control"
+                className="rounded-lg bg-slate-700 p-2 focus:border-blue-500 focus:bg-slate-800 focus:outline-none flex-grow"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="input-group-append">
-                <span className="input-group-text">
-                  <AiFillEye
-                    onClick={() => {
-                      setShowPassword((prevState) => !prevState);
-                    }}
-                  />
-                </span>
-              </div>
+              <AiFillEye
+                onClick={() => {
+                  setShowPassword((prevState) => !prevState);
+                }}
+                className={`cursor-pointer text-${showPassword ?'slate-800' : 'slate-300'} mr-2`}
+              />
             </div>
-          </div>
-            <div className="mb-3">
+            </div>
+            <div className="flex flex-col text-slate-400 py-1">
             <label htmlfor="exampleInputPassword1" className="form-label">
               Confirm New Password
             </label>
-            <input type='password' name="confirmpassword" className="form-control" onChange={(e) => setConfirmPassword(e.target.value)} />
+            <input type='password' name="confirmpassword" className="rounded-lg bg-slate-700 p-2 focus:border-blue-500 focus:bg-slate-800 focus:outline-none flex-grow" onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
-            <div className="mt-2 d-flex justify-content-between align-items-center">
-              <button type="submit" className="btn btn-primary">
-                Reset
-              </button>
-            </div>
+            <button type="submit" className='w-full my-3 py-2 bg-teal-500 shadow-lg shadow-teal-500/50 hover:bg-teal-800 text-white font-semibold rounded-lg'>
+              Reset
+          </button>
         </form>
       </div>
     </Layout>

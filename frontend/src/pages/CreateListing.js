@@ -102,7 +102,7 @@ const CreateListing = () => {
     }
     let geoLocation = {};
     const response = await fetch(
-      `https://geocode.search.hereapi.com/v1/geocode?q=${address}&apiKey=${APIKEY}`
+      `https://geocode.search.hereapi.com/v1/geocode?q=${address}&apiKey=quhVrdb2B-bvrDCtO1tp14k3VKC4-6nGCh9BuZUBQTA`
     );
     const dat = await response.json();
     geoLocation.lat = dat.items[0].position.lat;

@@ -4,60 +4,61 @@ import Layout from '../Components/Layout/Layout';
 import { request } from '../util/fetchAPI';
 
 const ForgotPassword = () => {
-  const [email,setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const onsubmitHandler = async (e) => {
-  e.preventDefault();
-  try {
-    const options = {
-      'Content-Type': 'application/json',
-    };
-    const data = await request('/auth/forgot-password', 'POST', options, { email });
-    console.log(data);
-    setMessage('Password reset email sent.');
-    setTimeout(() => {
-      setMessage(''); // Clear the message after a few seconds
-      navigate('/signin'); // Redirect to the sign-in page
-    }, 3000);
-  } catch (error) {
-    setMessage('Email not found'); // Display the error message to the user
-  }
-};
-
+    e.preventDefault();
+    try {
+      const options = {
+        'Content-Type': 'application/json',
+      };
+      const data = await request('/auth/forgot-password', 'POST', options, { email });
+      console.log(data);
+      setMessage('Password reset email sent.');
+      setTimeout(() => {
+        setMessage('');
+        navigate('/signin');
+      }, 3000);
+    } catch (error) {
+      setMessage('Email not found');
+    }
+  };
 
   return (
     <Layout>
-      <div className="d-flex align-items-center justify-content-center w-100 mt-4">
-        <form className="bg-light p-4" onSubmit={onsubmitHandler}>
-          <h3 className="bg-dark p-2 mt-2 text-light text-center">Reset Password</h3>
-          {message && (
-            <p className={`mt-2 ${message.includes('sent') ? 'text-success' : 'text-danger'}`}>
-              {message}
-            </p>
-          )}
-          <div className="mb-3">
-            <label htmlFor="exampleInputEmail1" className="form-label">
-              Email address
-            </label>
-            <input
-              type="email"
-              value= {email}
-              className="form-control"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className='d-flex justify-content-between'>
-          <button type="submit" className="btn btn-primary">
+    <div className="flex flex-col bg-slate-700 items-center justify-center min-h-screen">
+        <form className="max-w-[400px] w-full mx-auto rounded-lg bg-slate-900 p-8 px-8" onSubmit={onsubmitHandler}>
+        <h3 className="text-2xl dark:text-white font-bold text-center">Forgot Password</h3>
+        {message && (
+          <p className={`mt-2 ${message.includes('sent') ? 'text-success' : 'text-danger'}`}>
+            {message}
+          </p>
+        )}
+        <div className="flex flex-col text-slate-400 py-1 mt-4">
+          <label htmlFor="exampleInputEmail1" className="form-label">
+            Email address
+          </label>
+          <input
+            type="email"
+            value={email}
+            className="rounded-lg bg-slate-700 p-2 focus:border-blue-500 focus:bg-slate-800 focus:outline-none flex-grow"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="w-full my-3 py-2 bg-teal-500 shadow-lg shadow-teal-500/50 hover:bg-teal-800 text-white font-semibold rounded-lg"
+          >
             Send
           </button>
-          <Link to="/signup">Sign Up</Link>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
+    </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default ForgotPassword
+export default ForgotPassword;

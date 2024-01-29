@@ -67,25 +67,31 @@ authController.post('/login', async(req,res) => {
 // profile update
 authController.put('/update', async (req, res) => {
   try {
-    const user = await User.findOne({email: req.body.email})
-    const userId = user._id;
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: req.body },
-      { new: true }
-    );
-    if (!updatedUser) {
+    const { name,email, profileImg } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
       throw new Error('User not found');
     }
-    const { password, ...others } = updatedUser._doc;
+    if (name) {
+      user.name = name;
+    }
+    if (profileImg) {
+      user.profileImg = profileImg;
+    }
+
+    const updatedUser = await user.save();
+    const { password, ...userWithoutPassword } = updatedUser.toObject();
+
     const token = jwt.sign({ id: updatedUser._id }, process.env.JWT_SECRET, {
-     expiresIn: '4h',
+      expiresIn: '4h',
     });
-    return res.status(200).json({ others, token });
+    return res.status(200).json({ user: userWithoutPassword, token });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return res.status(500).json({ error: error.message });
   }
 });
+
 
 //forgot-password
 authController.post('/forgot-password', async(req,res) => {
@@ -100,7 +106,7 @@ authController.post('/forgot-password', async(req,res) => {
           service: 'gmail',
           auth: {
             user: 'noreply.liberoom@gmail.com',
-            pass: 'szotmdhfpivemhbu'
+            pass: 'xnvtgdfasythgjhm'
           }
         });
 
